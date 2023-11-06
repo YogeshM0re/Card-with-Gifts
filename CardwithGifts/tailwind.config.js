@@ -1,32 +1,24 @@
-
 // @ts-check
 import { join } from 'path';
 import forms from '@tailwindcss/forms';
-
-// 1. Import the Skeleton plugin
 import { skeleton } from '@skeletonlabs/tw-plugin';
 
-/** @type {import('tailwindcss').Config} */
 export default {
-	// 2. Opt for dark mode to be handled via the class method
-	darkMode: 'class',
-	content: [
-		'./src/**/*.{html,js,svelte,ts}',
-		// 3. Append the path to the Skeleton package
-		join(require.resolve(
-			'@skeletonlabs/skeleton'),
-			'../**/*.{html,js,svelte,ts}'
-		)
-	],
-	theme: {
-		extend: {},
-	},
-	plugins: [
+  darkMode: 'class',
+  content: [
+    './src/**/*.{html,js,svelte,ts}',
+    join(require.resolve('@skeletonlabs/skeleton'), '../**/*.{html,js,svelte,ts}')
+  ],
+  theme: {
+    extend: {
+      // Extend any necessary Tailwind styles
+    },
+  },
+  plugins: [
     skeleton({
-      themes: { preset: [ "gold-nouveau" ] },
+      themes: { preset: ['gold-nouveau'] },
     }),
     forms,
-
-	]
-}
-						
+    // Include other necessary Tailwind plugins
+  ],
+};
