@@ -272,13 +272,13 @@
             <div class="input-col">
               <label for="activationDate">Activation Date:</label>
               <input
-                type="date"
+                type="datetime-local"
                 id="activationDate"
                 bind:value={newCard.Activation_Date}
               />
               <label for="deactivationDate">Deactivation Date:</label>
               <input
-                type="date"
+                type="datetime-local"
                 id="deactivationDate"
                 bind:value={newCard.Deactivation_Date}
               />
