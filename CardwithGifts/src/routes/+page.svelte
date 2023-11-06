@@ -3,27 +3,26 @@
 
 <div class="container mx-auto p-2">
   <div
-    class="login-container bg-white p-7 shadow-md rounded-md skeleton-gold-nouveau"
+    class="login-container bg-gradient-to-br from-purple-300 to-purple-500 p-8 shadow-lg rounded-md border-2 border-purple-400"
   >
-    <h1 class="text-3xl font-semibold mb-4 text-center text-purple-600">
-      Login
+    <h1 class="text-4xl font-extrabold mb-6 text-center text-white">
+      Welcome Back!
     </h1>
 
-    <form class="flex flex-col space-y-4 items-center">
-      <!-- Added 'items-center' class to center contents -->
+    <form class="flex flex-col space-y-6 items-center">
       <label class="flex flex-col">
-        <span class="text-gray-700 mb-1">Username</span>
+        <span class="text-white mb-2 text-lg">Username</span>
         <input
-          class="input w-50 rounded-md py-2 px-3"
+          class="input w-64 rounded-lg py-3 px-4 bg-purple-100 bg-opacity-50"
           type="text"
           placeholder="Enter your username"
         />
       </label>
 
       <label class="flex flex-col">
-        <span class="text-gray-700 mb-1">Password</span>
+        <span class="text-white mb-2 text-lg">Password</span>
         <input
-          class="input w-50 rounded-md py-2 px-3"
+          class="input w-64 rounded-lg py-3 px-4 bg-purple-100 bg-opacity-50"
           type="password"
           placeholder="Enter your password"
         />
@@ -31,16 +30,16 @@
 
       <button
         type="submit"
-        class="btn skeleton-gold-nouveau-bg skeleton-gold-nouveau-text py-2 rounded-md hover:bg-purple-800"
+        class="btn bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-800"
       >
         Login
       </button>
     </form>
 
-    <div class="flex flex-col mt-4">
-      <a href="/" class="text-blue-600 text-center">Forgot Password?</a>
-      <a href="/registration" class="text-center text-gray-600">
-        Don't have an account? <span class="text-purple-600">Create one</span>
+    <div class="flex flex-col mt-6 space-y-4">
+      <a href="/" class="text-white text-center hover:underline">Forgot Password?</a>
+      <a href="/registration" class="text-center text-white">
+        Don't have an account? <span class="text-yellow-300">Create one</span>
       </a>
     </div>
   </div>
