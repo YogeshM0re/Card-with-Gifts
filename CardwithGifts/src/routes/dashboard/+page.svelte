@@ -288,7 +288,8 @@
                 <select
                   id="status"
                   bind:value={newCard.Status}
-                  class="w-full border border-gray-300 rounded-md p-2 bg-opacity-75 bg-purple-200 text-gray-700 mb-5"
+                  class="w-full border border-gray-300 rounded-md p-2 bg-opacity-75"
+                  style="background: linear-gradient(to bottom, #d99def48, #a4e9d94d); color: #777;"
                 >
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
@@ -377,13 +378,11 @@
     display: grid;
     gap: 1rem;
     background-color: aliceblue;
-    
   }
 
   input {
     @apply w-full border border-gray-300 rounded-md p-2;
-    background-color: rgba(254, 204, 254, 0.649);
-    
+    background: linear-gradient(to bottom, #d99def48, #a4e9d94d);
   }
 
   .fancy-table th,
@@ -425,7 +424,6 @@
     font-size: 0.9rem;
   }
 
-
   .images {
     display: flex;
     flex-wrap: wrap;
@@ -433,7 +431,7 @@
   }
 
   .image-container {
-    margin-top:10px;
+    margin-top: 10px;
     text-align: center;
     border: 1px solid #ccc;
     padding: 10px;

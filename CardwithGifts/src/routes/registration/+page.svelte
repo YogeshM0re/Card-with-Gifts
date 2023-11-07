@@ -1,4 +1,6 @@
 <script>
+  // @ts-nocheck
+
   let companyName = "";
   let phone = "";
   let phoneType = "mobile";
@@ -161,7 +163,9 @@
         Already have an account?
         <a
           href="/"
-          class="text-white underline hover:text-yellow-300 transition duration-300"
+          style="text-decoration: none; color: #1a73e8; font-weight: bold; transition: color 0.3s ease;"
+          onmouseover="this.style.color='#ea4335'"
+          onmouseout="this.style.color='#1a73e8'"
         >
           Login here
         </a>
@@ -183,12 +187,9 @@
   input[type="email"]:focus,
   input[type="password"]:focus,
   select:focus {
-    border-color: blue; /* Updated to blue for consistency */
+    border-color: blue;
   }
 
-  .btn:hover {
-    background-color: #4a5568; /* Adjusted hover color */
-  }
   .registration-form {
     display: flex;
     flex-direction: column;
@@ -196,13 +197,11 @@
     align-items: center;
   }
 
-  /* Gradient background */
   .bg-gradient-to-br {
-    background: linear-gradient(to bottom right, #9f7aea, #7158e2);
+    background: linear-gradient( #D5EAF5 , #F5DDDA);
   }
 
-  /* Button hover effect */
   .btn:hover {
-    background-color: #6b46c1;
+    background: linear-gradient(#eab9fd , #F5DDDA);
   }
 </style>
