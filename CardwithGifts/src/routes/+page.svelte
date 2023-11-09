@@ -27,7 +27,7 @@
     class="login-container"
     style="background: linear-gradient(#F5DDDA, #D5EAF5); padding: 2rem; box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1); border: 0.1px solid grey; border-radius: 0.375rem;"
   >
-    <h1 class="text-2xl mb-4 text-center text-white">Welcome Back!</h1>
+    <h1 class="text-2xl mb-4 text-center text-grey">Welcome Back!</h1>
 
     <form
       class="flex flex-col space-y-6 items-center"
@@ -83,22 +83,17 @@
 
 <style>
   .btn.bg-purple-400 {
-    background: #845ec2; /* Default background color */
+    background: #845ec2;
     color: white;
     padding: 8px 16px;
     border: none;
     border-radius: 8px;
-    transition: background 0.3s; /* Smooth transition for hover effect */
+    transition: background 0.3s;
   }
 
   .btn.bg-purple-400:hover {
-    background: linear-gradient(
-      45deg,
-      #ff758c,
-      #ff7eb3,
-      #845ec2,
-      #3425af
-    ); 
+    background: linear-gradient(45deg, #faacb9, #fcb1d0, #d7bffc, #bbb3f9);
+    color: black;
     animation: colorTransition 1s ease infinite;
   }
 

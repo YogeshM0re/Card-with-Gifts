@@ -36,7 +36,7 @@
   <div
     class="registration-form bg-gradient-to-br from-purple-300 to-purple-300 p-8 shadow-lg rounded-md border-2 border-purple-400"
   >
-    <h1 class="text-4xl  mb-6 text-center text-white">
+    <h1 class="text-4xl  mb-6 text-center text-grey">
       User Registration
     </h1>
 

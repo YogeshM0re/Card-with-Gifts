@@ -179,11 +179,44 @@
     newCard[field] = event.target.value;
     errors[field] = "";
   }
+  let originalCards = [...cards];
+
+  function handleSearch(event) {
+    const searchTerm = event.target.value.trim().toLowerCase();
+
+    if (searchTerm === "") {
+      cards = [...originalCards];
+    } else {
+      const filteredCards = originalCards.filter((card) => {
+        return Object.values(card).some(
+          (value) =>
+            value &&
+            typeof value === "string" &&
+            value.toLowerCase().includes(searchTerm)
+        );
+      });
+      cards = filteredCards;
+    }
+  }
+
+  let showCatalog = true;
+  let showAddCard = false;
+
+  function viewCatalog() {
+    showCatalog = true;
+    showAddCard = false;
+  }
+
+  function showAddCardSection() {
+    showCatalog = true;
+    showAddCard = true;
+  }
 </script>
 
 <div class="container">
   <div class="dashboard">
-    <!-- <div
+    {#if showCatalog}
+      <!-- <div
       class="user-info card bg-gradient-to-r from-purple-500 to-indigo-600 p-6 rounded-lg shadow-lg mb-6"
     >
       <h2 class="text-3xl font-bold text-white">Welcome, {user.username}!</h2>
@@ -191,234 +224,259 @@
       <button class="button-primary mt-4" on:click={logout}>Logout</button>
     </div> -->
 
-    <div
-      class="card-management card bg-white p-6 rounded-lg shadow-lg mb-6 border border-grey"
-    >
-      <div class="overflow-x-auto border border-grey">
-        <table class="w-full fancy-table">
-          <thead>
-            <tr class="border border-black scroll-cell">
-              <th>Publisher ID</th>
-              <th>Occasion</th>
-              <th>Recipient</th>
-              <th>Orientation</th>
-              <th>Publisher Sku</th>
-              <th>CardwithGift Sku</th>
-              <th>Created Date</th>
-              <th>Modified Date</th>
-              <th>Activation Date</th>
-              <th>Deactivation Date</th>
-              <th>Front</th>
-              <th>Inside Left</th>
-              <th>Inside Right</th>
-              <th>Back</th>
-              <th>Uploaded By</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each cards as card}
-              <tr class="border border-black scroll-cell">
-                <td>{card.Publisher_ID}</td>
-                <td>{card.Occasion}</td>
-                <td>{card.Recipient}</td>
-                <td>{card.Orientation}</td>
-                <td>{card.Publisher_Sku}</td>
-                <td>{card.CardwithGift_Sku}</td>
-                <td>{card.Created_Date}</td>
-                <td>{card.Modified_Date}</td>
-                <td>{card.Activation_Date}</td>
-                <td>{card.Deactivation_Date}</td>
-                <td class="scroll-cell">{card.Front}</td>
-                <td class="scroll-cell">{card.Inside_Left}</td>
-                <td class="scroll-cell">{card.Inside_Right}</td>
-                <td class="scroll-cell">{card.Back}</td>
-                <td>{card.Uploaded_By}</td>
-                <td>{card.Status}</td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
+      <div class="search-box mb-4">
+        <input
+          type="text"
+          placeholder="Search cards..."
+          on:input={handleSearch}
+          class="w-full border border-gray-300 rounded-md p-2"
+        />
       </div>
-    </div>
 
-    <div class="add-card-section card bg-white p-4 rounded shadow-md mb-4">
-      <div class="input-fields">
-        <div>
-          <div
-            class="input-row grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          >
-            <div class="input-col">
-              <label for="occasion">Occasion:</label>
-              <input
-                type="text"
-                bind:value={newCard.Occasion}
-                on:input={(e) => handleInputChange(e, "occasion")}
-              />
-              {#if errors.Occasion && newCard.Occasion === ""}
-                <p style="color: red;">Occasion is required.</p>
-              {/if}
+      <div class="action-links text-center">
+        <ul class="inline">
+          <li class="inline">
+            <a href="dashboard" on:click={viewCatalog}>View Catalog</a>
+          </li>
+          <li class="inline">
+            <a href="dashboard" on:click={showAddCardSection}>Create Catalog</a>
+          </li>
+          <li class="inline">
+            <a href="dashboard" on:click={showAddCardSection}>Add Card</a>
+          </li>
+        </ul>
+      </div>
 
-              <label for="recipient">Recipient:</label>
+      <div
+        class="card-management card bg-white p-6 rounded-lg shadow-lg mb-6 border border-grey"
+      >
+        <div class="overflow-x-auto border border-grey">
+          <table class="w-full fancy-table">
+            <thead>
+              <tr class="border border-black scroll-cell">
+                <th>Publisher ID</th>
+                <th>Occasion</th>
+                <th>Recipient</th>
+                <th>Orientation</th>
+                <th>Publisher Sku</th>
+                <th>CardwithGift Sku</th>
+                <th>Created Date</th>
+                <th>Modified Date</th>
+                <th>Activation Date</th>
+                <th>Deactivation Date</th>
+                <th>Front</th>
+                <th>Inside Left</th>
+                <th>Inside Right</th>
+                <th>Back</th>
+                <th>Uploaded By</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each cards as card}
+                <tr class="border border-black scroll-cell">
+                  <td>{card.Publisher_ID}</td>
+                  <td>{card.Occasion}</td>
+                  <td>{card.Recipient}</td>
+                  <td>{card.Orientation}</td>
+                  <td>{card.Publisher_Sku}</td>
+                  <td>{card.CardwithGift_Sku}</td>
+                  <td>{card.Created_Date}</td>
+                  <td>{card.Modified_Date}</td>
+                  <td>{card.Activation_Date}</td>
+                  <td>{card.Deactivation_Date}</td>
+                  <td class="scroll-cell">{card.Front}</td>
+                  <td class="scroll-cell">{card.Inside_Left}</td>
+                  <td class="scroll-cell">{card.Inside_Right}</td>
+                  <td class="scroll-cell">{card.Back}</td>
+                  <td>{card.Uploaded_By}</td>
+                  <td>{card.Status}</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {/if}
+    {#if showAddCard}
+      <div class="add-card-section card bg-white p-4 rounded shadow-md mb-4">
+        <div class="input-fields">
+          <div>
+            <div
+              class="input-row grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+            >
+              <div class="input-col">
+                <label for="occasion">Occasion:</label>
+                <input
+                  type="text"
+                  bind:value={newCard.Occasion}
+                  on:input={(e) => handleInputChange(e, "occasion")}
+                />
+                {#if errors.Occasion && newCard.Occasion === ""}
+                  <p style="color: red;">Occasion is required.</p>
+                {/if}
 
-              <input
-                type="text"
-                bind:value={newCard.Recipient}
-                on:input={(e) => handleInputChange(e, "recipient")}
-              />
-              {#if errors.Recipient && newCard.Recipient === ""}
-                <p style="color: red;">Recipient is required.</p>
-              {/if}
+                <label for="recipient">Recipient:</label>
 
-              <label for="publisherSku">Publisher SKU:</label>
+                <input
+                  type="text"
+                  bind:value={newCard.Recipient}
+                  on:input={(e) => handleInputChange(e, "recipient")}
+                />
+                {#if errors.Recipient && newCard.Recipient === ""}
+                  <p style="color: red;">Recipient is required.</p>
+                {/if}
 
-              <input
-                type="text"
-                bind:value={newCard.Publisher_Sku}
-                on:input={(e) => handleInputChange(e, "publisherSku")}
-              />
-              {#if errors.Publisher_Sku && newCard.Publisher_Sku === ""}
-                <p style="color: red;">Publisher Sku is required.</p>
-              {/if}
+                <label for="publisherSku">Publisher SKU:</label>
+
+                <input
+                  type="text"
+                  bind:value={newCard.Publisher_Sku}
+                  on:input={(e) => handleInputChange(e, "publisherSku")}
+                />
+                {#if errors.Publisher_Sku && newCard.Publisher_Sku === ""}
+                  <p style="color: red;">Publisher Sku is required.</p>
+                {/if}
+              </div>
+
+              <div class="input-col">
+                <label for="orientation">Orientation:</label>
+                <div class="relative">
+                  <select
+                    id="orientation"
+                    bind:value={newCard.Orientation}
+                    class="w-full border border-gray-300 rounded-md p-2 bg-opacity-75"
+                    style="color: #777;"
+                  >
+                    <option value="Landscape">Landscape</option>
+                    <option value="Portrait">Portrait</option>
+                  </select>
+                </div>
+
+                <label for="cardwithGiftSku">Card with Gift SKU:</label>
+
+                <input
+                  type="text"
+                  bind:value={newCard.CardwithGift_Sku}
+                  on:input={(e) => handleInputChange(e, "cardwithGiftSku")}
+                />
+                {#if errors.CardwithGift_Sku && newCard.CardwithGift_Sku === ""}
+                  <p style="color: red;">CardwithGift Sku is required.</p>
+                {/if}
+
+                <label for="uploadedBy">Uploaded By:</label>
+
+                <input
+                  type="text"
+                  bind:value={newCard.Uploaded_By}
+                  on:input={(e) => handleInputChange(e, "uploadedBy")}
+                />
+                {#if errors.Uploaded_By && newCard.Uploaded_By === ""}
+                  <p style="color: red;">Uploaded By is required.</p>
+                {/if}
+              </div>
+              <div class="input-col">
+                <label for="activationDate">Activation Date:</label>
+                <input
+                  type="datetime-local"
+                  id="activationDate"
+                  bind:value={newCard.Activation_Date}
+                />
+                <label for="deactivationDate">Deactivation Date:</label>
+                <input
+                  type="datetime-local"
+                  id="deactivationDate"
+                  bind:value={newCard.Deactivation_Date}
+                />
+
+                <label for="status">Status:</label>
+                <div class="relative">
+                  <select
+                    id="status"
+                    bind:value={newCard.Status}
+                    class="w-full border border-gray-300 rounded-md p-2 bg-opacity-75"
+                    style=" color: #777;"
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
-            <div class="input-col">
-              <label for="orientation">Orientation:</label>
-              <div class="relative">
-                <select
-                  id="orientation"
-                  bind:value={newCard.Orientation}
-                  class="w-full border border-gray-300 rounded-md p-2 bg-opacity-75"
-                  style="color: #777;"
+            <div class="images">
+              <div class="input-col">
+                <label for="frontImage">Front Image:</label>
+                <input
+                  type="file"
+                  id="frontImage"
+                  on:change={(e) => handleImageSelect(e, "Front")}
+                />
+                <div
+                  class="image-container"
+                  style={newCard.Front ? "" : "display: none;"}
                 >
-                  <option value="Landscape">Landscape</option>
-                  <option value="Portrait">Portrait</option>
-                </select>
+                  <img src={newCard.Front} alt="Front" />
+                </div>
               </div>
 
-              <label for="cardwithGiftSku">Card with Gift SKU:</label>
-
-              <input
-                type="text"
-                bind:value={newCard.CardwithGift_Sku}
-                on:input={(e) => handleInputChange(e, "cardwithGiftSku")}
-              />
-              {#if errors.CardwithGift_Sku && newCard.CardwithGift_Sku === ""}
-                <p style="color: red;">CardwithGift Sku is required.</p>
-              {/if}
-
-              <label for="uploadedBy">Uploaded By:</label>
-
-              <input
-                type="text"
-                bind:value={newCard.Uploaded_By}
-                on:input={(e) => handleInputChange(e, "uploadedBy")}
-              />
-              {#if errors.Uploaded_By && newCard.Uploaded_By === ""}
-                <p style="color: red;">Uploaded By is required.</p>
-              {/if}
-            </div>
-            <div class="input-col">
-              <label for="activationDate">Activation Date:</label>
-              <input
-                type="datetime-local"
-                id="activationDate"
-                bind:value={newCard.Activation_Date}
-              />
-              <label for="deactivationDate">Deactivation Date:</label>
-              <input
-                type="datetime-local"
-                id="deactivationDate"
-                bind:value={newCard.Deactivation_Date}
-              />
-
-              <label for="status">Status:</label>
-              <div class="relative">
-                <select
-                  id="status"
-                  bind:value={newCard.Status}
-                  class="w-full border border-gray-300 rounded-md p-2 bg-opacity-75"
-                  style=" color: #777;"
+              <div class="input-col">
+                <label for="insideLeftImage">Inside Left Image:</label>
+                <input
+                  type="file"
+                  id="insideLeftImage"
+                  on:change={(e) => handleImageSelect(e, "Inside_Left")}
+                />
+                <div
+                  class="image-container"
+                  style={newCard.Inside_Left ? "" : "display: none;"}
                 >
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
+                  <img src={newCard.Inside_Left} alt="Inside Left" />
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div class="images">
-            <div class="input-col">
-              <label for="frontImage">Front Image:</label>
-              <input
-                type="file"
-                id="frontImage"
-                on:change={(e) => handleImageSelect(e, "Front")}
-              />
-              <div
-                class="image-container"
-                style={newCard.Front ? "" : "display: none;"}
-              >
-                <img src={newCard.Front} alt="Front" />
+              <div class="input-col">
+                <label for="insideRightImage">Inside Right Image:</label>
+                <input
+                  type="file"
+                  id="insideRightImage"
+                  on:change={(e) => handleImageSelect(e, "Inside_Right")}
+                />
+                <div
+                  class="image-container"
+                  style={newCard.Inside_Right ? "" : "display: none;"}
+                >
+                  <img src={newCard.Inside_Right} alt="Inside Right" />
+                </div>
               </div>
-            </div>
 
-            <div class="input-col">
-              <label for="insideLeftImage">Inside Left Image:</label>
-              <input
-                type="file"
-                id="insideLeftImage"
-                on:change={(e) => handleImageSelect(e, "Inside_Left")}
-              />
-              <div
-                class="image-container"
-                style={newCard.Inside_Left ? "" : "display: none;"}
-              >
-                <img src={newCard.Inside_Left} alt="Inside Left" />
-              </div>
-            </div>
-
-            <div class="input-col">
-              <label for="insideRightImage">Inside Right Image:</label>
-              <input
-                type="file"
-                id="insideRightImage"
-                on:change={(e) => handleImageSelect(e, "Inside_Right")}
-              />
-              <div
-                class="image-container"
-                style={newCard.Inside_Right ? "" : "display: none;"}
-              >
-                <img src={newCard.Inside_Right} alt="Inside Right" />
-              </div>
-            </div>
-
-            <div class="input-col">
-              <label for="backImage">Back Image:</label>
-              <input
-                type="file"
-                id="backImage"
-                on:change={(e) => handleImageSelect(e, "Back")}
-              />
-              <div
-                class="image-container"
-                style={newCard.Back ? "" : "display: none;"}
-              >
-                <img src={newCard.Back} alt="Back" />
+              <div class="input-col">
+                <label for="backImage">Back Image:</label>
+                <input
+                  type="file"
+                  id="backImage"
+                  on:change={(e) => handleImageSelect(e, "Back")}
+                />
+                <div
+                  class="image-container"
+                  style={newCard.Back ? "" : "display: none;"}
+                >
+                  <img src={newCard.Back} alt="Back" />
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <div class="button-container">
+          <button class="button-primary btn-add-card" on:click={addNewCard}
+            >Add Card</button
+          >
+          <button class="button-secondary btn-cancel" on:click={resetNewCard}
+            >Cancel</button
+          >
+        </div>
       </div>
-      <div class="button-container mt-4 flex justify-end space-x-4">
-        <button class="button-primary btn-add-card" on:click={addNewCard}
-          >Add Card</button
-        >
-        <button class="button-secondary btn-cancel" on:click={resetNewCard}
-          >Cancel</button
-        >
-      </div>
-    </div>
+    {/if}
   </div>
 </div>
 
@@ -450,7 +508,13 @@
   .fancy-table td {
     @apply p-3;
     font-size: 80%;
+    border: 1px solid #ddd;
   }
+
+  .fancy-table tr:hover {
+    background-color: #ddd;
+  }
+
   .scroll-cell {
     max-width: 150px;
     white-space: nowrap;
@@ -462,15 +526,22 @@
   .input-col {
     flex: 1;
     margin: 0 5px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    position: relative;
   }
   .input-col label {
     font-weight: bold;
     color: black;
     margin-bottom: 0.3rem;
     font-size: 0.9rem;
+    margin-top: 25px;
   }
 
+  .input-col p {
+    color: red;
+    font-size: 15px;
+    position: absolute;
+  }
   .images {
     display: flex;
     flex-wrap: wrap;
@@ -505,7 +576,7 @@
 
   .button-primary,
   .button-secondary {
-    padding: 10px 20px;
+    padding: 10px 25px;
     border: none;
     border-radius: 5px;
     font-size: 16px;
@@ -520,7 +591,7 @@
 
   .button-primary:hover,
   .button-secondary:hover {
-    background: linear-gradient(45deg, #ff758c, #ff7eb3, #845ec2, #3425af);
+    background: linear-gradient(45deg, #bee8ff, #ffccc5);
 
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
     animation: colorTransition 1s ease infinite;
@@ -537,5 +608,41 @@
     100% {
       filter: hue-rotate(360deg);
     }
+  }
+  .search-box {
+    margin-bottom: 20px;
+  }
+
+  .action-links {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .inline {
+    display: inline;
+  }
+
+  .action-links ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .action-links ul li {
+    display: inline;
+    margin: 0 10px;
+  }
+
+  .action-links ul li a {
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    color: #333;
+  }
+
+  .action-links ul li a:hover {
+    background: linear-gradient(45deg, #bee8ff, #ffccc5);
   }
 </style>
