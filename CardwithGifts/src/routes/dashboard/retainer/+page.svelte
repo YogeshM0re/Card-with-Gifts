@@ -1,7 +1,6 @@
-<!-- Include Skeleton CSS from a CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"> -->
 
-<script lang="ts">
+<!-- <script lang="ts">
   let retailerName = "Your Retailer";
   let retailerID = "12345";
   let cards = [] as { id: number, title: string }[];
@@ -32,8 +31,8 @@
     // Function to view CardwithGifts Catalog
     // Implement functionality to view the CardwithGifts Catalog
   }
-</script>
-
+</script> -->
+<!-- 
 <div class="container">
 
 
@@ -61,8 +60,7 @@
       </section>
 
       <section class="card-preview">
-        <!-- Thumbnails for card preview -->
-        <!-- Consider a grid or layout for card preview thumbnails -->
+   
       </section>
 
       <div class="button-group" style="margin-top: 20px;">
@@ -72,4 +70,4 @@
       </div>
     </div>
   </main>
-</div>
+</div> -->

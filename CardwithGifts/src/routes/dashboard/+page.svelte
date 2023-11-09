@@ -1,5 +1,6 @@
 <script>
   // @ts-nocheck
+  import * as yup from "yup";
 
   let user = {
     username: "John Doe",
@@ -90,17 +91,20 @@
     },
   ];
 
+  let currentDate = new Date().toISOString().split("T")[0];
+  let currentTime = new Date().toTimeString().split(" ")[0];
+
   let newCard = {
     Publisher_ID: "",
     Occasion: "",
     Recipient: "",
-    Orientation: "",
+    Orientation: "Portrait",
     Publisher_Sku: "",
     CardwithGift_Sku: "",
     Created_Date: "",
     Modified_Date: "",
-    Activation_Date: "",
-    Deactivation_Date: "",
+    Activation_Date: `${currentDate}T${currentTime}`,
+    Deactivation_Date: `${currentDate}T${currentTime}`,
     Front: "",
     Inside_Left: "",
     Inside_Right: "",
@@ -109,35 +113,58 @@
     Status: "Active",
   };
 
-  const logout = () => {
-    console.log("Logging out");
+  const cardSchema = yup.object().shape({
+    Occasion: yup.string().required(),
+    Recipient: yup.string().required(),
+    Publisher_Sku: yup.string().required(),
+    CardwithGift_Sku: yup.string().required(),
+    Uploaded_By: yup.string().required(),
+  });
+
+  let errors = {};
+
+  const addNewCard = async () => {
+    try {
+      await cardSchema.validate(newCard, { abortEarly: false });
+      const uniqueID =
+        cards.length > 0
+          ? Math.max(...cards.map((card) => Number(card.Publisher_ID))) + 1
+          : 1;
+      newCard.Publisher_ID = String(uniqueID);
+      newCard.Created_Date = new Date().toISOString().split("T")[0];
+      cards = [...cards, { ...newCard }];
+      console.log("New Cards:", cards);
+      resetNewCard();
+    } catch (error) {
+      error.inner.forEach((err) => {
+        errors[err.path] = err.message;
+      });
+    }
   };
 
-  const addNewCard = () => {
-    const uniqueID =
-      cards.length > 0
-        ? Math.max(...cards.map((card) => card.Publisher_ID)) + 1
-        : 1;
-
-    newCard.Publisher_ID = uniqueID;
-
-    newCard.Created_Date = new Date().toISOString().split("T")[0];
-    cards = [...cards, newCard];
-    resetNewCard();
-  };
+  function handleImageSelect(event, imageType) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        newCard[imageType] = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
   function resetNewCard() {
     newCard = {
       Publisher_ID: "",
       Occasion: "",
       Recipient: "",
-      Orientation: "",
+      Orientation: "Portrait",
       Publisher_Sku: "",
       CardwithGift_Sku: "",
       Created_Date: "",
       Modified_Date: "",
-      Activation_Date: "",
-      Deactivation_Date: "",
+      Activation_Date: `${currentDate}T${currentTime}`,
+      Deactivation_Date: `${currentDate}T${currentTime}`,
       Front: "",
       Inside_Left: "",
       Inside_Right: "",
@@ -145,20 +172,12 @@
       Uploaded_By: "",
       Status: "Active",
     };
+    errors = {};
   }
 
-  function handleImageSelect(event, imageType) {
-    const file = event.target.files[0];
-
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        newCard[imageType] = reader.result;
-      };
-
-      reader.readAsDataURL(file);
-    }
+  function handleInputChange(event, field) {
+    newCard[field] = event.target.value;
+    errors[field] = "";
   }
 </script>
 
@@ -224,7 +243,6 @@
     </div>
 
     <div class="add-card-section card bg-white p-4 rounded shadow-md mb-4">
-      <h3 class="text-xl font-semibold mb-4">Add New Card</h3>
       <div class="input-fields">
         <div>
           <div
@@ -232,42 +250,73 @@
           >
             <div class="input-col">
               <label for="occasion">Occasion:</label>
-              <input type="text" id="occasion" bind:value={newCard.Occasion} />
+              <input
+                type="text"
+                bind:value={newCard.Occasion}
+                on:input={(e) => handleInputChange(e, "occasion")}
+              />
+              {#if errors.Occasion && newCard.Occasion === ""}
+                <p style="color: red;">Occasion is required.</p>
+              {/if}
 
               <label for="recipient">Recipient:</label>
+
               <input
                 type="text"
-                id="recipient"
                 bind:value={newCard.Recipient}
+                on:input={(e) => handleInputChange(e, "recipient")}
               />
+              {#if errors.Recipient && newCard.Recipient === ""}
+                <p style="color: red;">Recipient is required.</p>
+              {/if}
 
               <label for="publisherSku">Publisher SKU:</label>
+
               <input
                 type="text"
-                id="publisherSku"
                 bind:value={newCard.Publisher_Sku}
+                on:input={(e) => handleInputChange(e, "publisherSku")}
               />
+              {#if errors.Publisher_Sku && newCard.Publisher_Sku === ""}
+                <p style="color: red;">Publisher Sku is required.</p>
+              {/if}
             </div>
 
             <div class="input-col">
               <label for="orientation">Orientation:</label>
-              <input
-                type="text"
-                id="orientation"
-                bind:value={newCard.Orientation}
-              />
+              <div class="relative">
+                <select
+                  id="orientation"
+                  bind:value={newCard.Orientation}
+                  class="w-full border border-gray-300 rounded-md p-2 bg-opacity-75"
+                  style="color: #777;"
+                >
+                  <option value="Landscape">Landscape</option>
+                  <option value="Portrait">Portrait</option>
+                </select>
+              </div>
+
               <label for="cardwithGiftSku">Card with Gift SKU:</label>
+
               <input
                 type="text"
-                id="cardwithGiftSku"
                 bind:value={newCard.CardwithGift_Sku}
+                on:input={(e) => handleInputChange(e, "cardwithGiftSku")}
               />
+              {#if errors.CardwithGift_Sku && newCard.CardwithGift_Sku === ""}
+                <p style="color: red;">CardwithGift Sku is required.</p>
+              {/if}
+
               <label for="uploadedBy">Uploaded By:</label>
+
               <input
                 type="text"
-                id="uploadedBy"
                 bind:value={newCard.Uploaded_By}
+                on:input={(e) => handleInputChange(e, "uploadedBy")}
               />
+              {#if errors.Uploaded_By && newCard.Uploaded_By === ""}
+                <p style="color: red;">Uploaded By is required.</p>
+              {/if}
             </div>
             <div class="input-col">
               <label for="activationDate">Activation Date:</label>
@@ -289,7 +338,7 @@
                   id="status"
                   bind:value={newCard.Status}
                   class="w-full border border-gray-300 rounded-md p-2 bg-opacity-75"
-                  style="background: linear-gradient(to bottom, #d99def48, #a4e9d94d); color: #777;"
+                  style=" color: #777;"
                 >
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
@@ -306,7 +355,10 @@
                 id="frontImage"
                 on:change={(e) => handleImageSelect(e, "Front")}
               />
-              <div class="image-container">
+              <div
+                class="image-container"
+                style={newCard.Front ? "" : "display: none;"}
+              >
                 <img src={newCard.Front} alt="Front" />
               </div>
             </div>
@@ -318,7 +370,10 @@
                 id="insideLeftImage"
                 on:change={(e) => handleImageSelect(e, "Inside_Left")}
               />
-              <div class="image-container">
+              <div
+                class="image-container"
+                style={newCard.Inside_Left ? "" : "display: none;"}
+              >
                 <img src={newCard.Inside_Left} alt="Inside Left" />
               </div>
             </div>
@@ -330,7 +385,10 @@
                 id="insideRightImage"
                 on:change={(e) => handleImageSelect(e, "Inside_Right")}
               />
-              <div class="image-container">
+              <div
+                class="image-container"
+                style={newCard.Inside_Right ? "" : "display: none;"}
+              >
                 <img src={newCard.Inside_Right} alt="Inside Right" />
               </div>
             </div>
@@ -342,16 +400,24 @@
                 id="backImage"
                 on:change={(e) => handleImageSelect(e, "Back")}
               />
-              <div class="image-container">
+              <div
+                class="image-container"
+                style={newCard.Back ? "" : "display: none;"}
+              >
                 <img src={newCard.Back} alt="Back" />
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <button class="button-primary mt-4" on:click={addNewCard}>Add Card</button
-      >
+      <div class="button-container mt-4 flex justify-end space-x-4">
+        <button class="button-primary btn-add-card" on:click={addNewCard}
+          >Add Card</button
+        >
+        <button class="button-secondary btn-cancel" on:click={resetNewCard}
+          >Cancel</button
+        >
+      </div>
     </div>
   </div>
 </div>
@@ -370,19 +436,14 @@
     @apply rounded shadow-md;
   }
 
-  .button-primary {
-    @apply bg-green-500 text-white py-2 px-4 rounded transition duration-300;
-  }
-
   .input-row {
     display: grid;
     gap: 1rem;
-    background-color: aliceblue;
+    background: linear-gradient(to bottom, #d5eaf584, #f5ddda7a);
   }
 
   input {
     @apply w-full border border-gray-300 rounded-md p-2;
-    background: linear-gradient(to bottom, #d99def48, #a4e9d94d);
   }
 
   .fancy-table th,
@@ -398,24 +459,10 @@
     cursor: pointer;
   }
 
-  .button-primary {
-    display: block;
-    width: 100%;
-    background-color: #2ecc71;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  .button-primary:hover {
-    background-color: #27ae60;
-  }
   .input-col {
     flex: 1;
     margin: 0 5px;
+    margin-bottom: 20px;
   }
   .input-col label {
     font-weight: bold;
@@ -451,4 +498,28 @@
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(142, 96, 227, 0.518);
   }
+  .button-container {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .button-primary,
+  .button-secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    background-image: linear-gradient(to bottom, #d5eaf5, #f5ddda);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .button-primary:hover,
+  .button-secondary:hover {
+    background-image: linear-gradient(to bottom, #d5eaf5, #f5ddda);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.311);
+  }
+
 </style>

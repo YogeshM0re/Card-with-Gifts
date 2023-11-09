@@ -36,7 +36,7 @@
   <div
     class="registration-form bg-gradient-to-br from-purple-300 to-purple-300 p-8 shadow-lg rounded-md border-2 border-purple-400"
   >
-    <h1 class="text-4xl font-extrabold mb-6 text-center text-white">
+    <h1 class="text-4xl  mb-6 text-center text-white">
       User Registration
     </h1>
 
@@ -181,6 +181,10 @@
   select {
     border: 1px solid #ccc;
     transition: border-color 0.3s;
+    border: 1px solid #ccc;
+  transition: border-color 0.3s;
+  color: black; 
+  background-color: white;
   }
 
   input[type="text"]:focus,
@@ -195,6 +199,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
   }
 
   .bg-gradient-to-br {
