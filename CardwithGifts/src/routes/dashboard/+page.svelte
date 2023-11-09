@@ -1,11 +1,9 @@
 <script>
   // @ts-nocheck
   import * as yup from "yup";
+  import "@fortawesome/fontawesome-free/css/all.min.css";
 
-  let user = {
-    username: "John Doe",
-    email: "john@example.com",
-  };
+  // --------------------------------------- Static Card Data ----------------------------------------
 
   let cards = [
     {
@@ -16,7 +14,7 @@
       Publisher_Sku: "SKU123",
       CardwithGift_Sku: "CardSKU123",
       Created_Date: "2023-10-12",
-      Modified_Date: "2023-10-15",
+      Modified_Date: "2022-10-15",
       Activation_Date: "2023-10-20",
       Deactivation_Date: "2023-12-01",
       Front: "Front Image URL",
@@ -69,10 +67,10 @@
       Orientation: "Landscape",
       Publisher_Sku: "SKU453",
       CardwithGift_Sku: "CardSKU453",
-      Created_Date: "2022-08-20",
-      Modified_Date: "2023-10-15",
-      Activation_Date: "2023-10-20",
-      Deactivation_Date: "2023-12-01",
+      Created_Date: "2021-08-22",
+      Modified_Date: "2022-02-15",
+      Activation_Date: "2023-01-05",
+      Deactivation_Date: "2023-06-28",
       Front: "Front Image URL",
       Inside_Left: "Inside Left Image URL",
       Inside_Right: "Inside Right Image URL",
@@ -82,6 +80,8 @@
     },
   ];
 
+  // --------------------------------------- notifications ----------------------------------------
+
   let notifications = [
     {
       message: "New card added",
@@ -90,6 +90,8 @@
       message: "Reminder: Cards due soon",
     },
   ];
+
+  // --------------------------------------- New Card ----------------------------------------
 
   let currentDate = new Date().toISOString().split("T")[0];
   let currentTime = new Date().toTimeString().split(" ")[0];
@@ -113,6 +115,42 @@
     Status: "Active",
   };
 
+  // --------------------------------------- Add New Card ----------------------------------------
+
+  const addNewCard = async () => {
+    try {
+      await cardSchema.validate(newCard, { abortEarly: false });
+
+      if (newCard.Publisher_ID) {
+        const index = cards.findIndex(
+          (card) => card.Publisher_ID === newCard.Publisher_ID
+        );
+        if (index !== -1) {
+          cards[index] = { ...newCard };
+          console.log("Card updated:", cards[index]);
+        } else {
+          throw new Error("Card not found for updating.");
+        }
+      } else {
+        const uniqueID =
+          cards.length > 0
+            ? Math.max(...cards.map((card) => Number(card.Publisher_ID))) + 1
+            : 1;
+        newCard.Publisher_ID = String(uniqueID);
+        newCard.Created_Date = new Date().toISOString().split("T")[0];
+        cards = [...cards, { ...newCard }];
+        console.log("New Card added:", newCard);
+      }
+      resetNewCard();
+    } catch (error) {
+      error.inner.forEach((err) => {
+        errors[err.path] = err.message;
+      });
+    }
+  };
+
+  // --------------------------------------- validation ----------------------------------------
+
   const cardSchema = yup.object().shape({
     Occasion: yup.string().required(),
     Recipient: yup.string().required(),
@@ -123,35 +161,50 @@
 
   let errors = {};
 
-  const addNewCard = async () => {
-    try {
-      await cardSchema.validate(newCard, { abortEarly: false });
-      const uniqueID =
-        cards.length > 0
-          ? Math.max(...cards.map((card) => Number(card.Publisher_ID))) + 1
-          : 1;
-      newCard.Publisher_ID = String(uniqueID);
-      newCard.Created_Date = new Date().toISOString().split("T")[0];
-      cards = [...cards, { ...newCard }];
-      console.log("New Cards:", cards);
-      resetNewCard();
-    } catch (error) {
-      error.inner.forEach((err) => {
-        errors[err.path] = err.message;
-      });
-    }
-  };
+  // --------------------------------------- Image Selector ----------------------------------------
+
+  const imageSchema = yup
+    .mixed()
+    .test(
+      "fileType",
+      "Invalid file format. Only PNG or JPG allowed.",
+      (value) => {
+        if (!value) return true; // If no file is selected, it's not an error
+        const fileType = value.type;
+        return (
+          fileType === "image/png" ||
+          fileType === "image/jpeg" ||
+          fileType === "image/jpg"
+        );
+      }
+    );
+
+  let imageErrors = {}; // Define an object to hold image-related errors
 
   function handleImageSelect(event, imageType) {
     const file = event.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        newCard[imageType] = reader.result;
-      };
-      reader.readAsDataURL(file);
+      imageSchema
+        .validate(file)
+        .then(() => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            newCard[imageType] = reader.result;
+          };
+          reader.readAsDataURL(file);
+          // Clear the error message for the specific image type when valid
+          imageErrors[imageType] = "";
+        })
+        .catch((error) => {
+          console.error("Image validation error:", error.message);
+          event.target.value = null;
+          // Set an error message for the specific image type when validation fails
+          imageErrors[imageType] =
+            "Invalid file format. Only PNG or JPG allowed.";
+        });
     }
   }
+  // --------------------------------------- Reset Card----------------------------------------
 
   function resetNewCard() {
     newCard = {
@@ -174,12 +227,15 @@
     };
     errors = {};
   }
+  // --------------------------------------- error message clear ----------------------------------------
 
   function handleInputChange(event, field) {
     newCard[field] = event.target.value;
     errors[field] = "";
   }
   let originalCards = [...cards];
+
+  // --------------------------------------- Search Bar ----------------------------------------
 
   function handleSearch(event) {
     const searchTerm = event.target.value.trim().toLowerCase();
@@ -198,6 +254,7 @@
       cards = filteredCards;
     }
   }
+  // --------------------------------------- show Add Card & show Catalog ----------------------------------------
 
   let showCatalog = true;
   let showAddCard = false;
@@ -210,6 +267,54 @@
   function showAddCardSection() {
     showCatalog = true;
     showAddCard = true;
+  }
+
+  // --------------------------------------- Edit Card ----------------------------------------
+
+  function editCard(card) {
+    newCard = { ...card };
+    showAddCardSection();
+    const addCardButton = document.querySelector(".btn-add-card");
+    addCardButton.textContent = "Update Card";
+    addCardButton.removeEventListener("click", addNewCard);
+    addCardButton.addEventListener("click", updateCard);
+  }
+
+  function updateCard() {
+    try {
+      const index = cards.findIndex(
+        (card) => card.Publisher_ID === newCard.Publisher_ID
+      );
+      if (index !== -1) {
+        cards[index] = { ...newCard };
+        cards[index].Modified_Date = new Date().toISOString().split("T")[0];
+        console.log("Card updated:", cards[index]);
+        resetNewCard();
+        const addCardButton = document.querySelector(".btn-add-card");
+        addCardButton.textContent = "Add Card";
+        addCardButton.removeEventListener("click", updateCard);
+        addCardButton.addEventListener("click", addNewCard);
+      } else {
+        throw new Error("Card not found for updating.");
+      }
+    } catch (error) {
+      console.error("Error updating card:", error);
+    }
+  }
+
+  // --------------------------------------- Delete Card ----------------------------------------
+
+  function deleteCard(publisherId) {
+    const index = cards.findIndex((card) => card.Publisher_ID === publisherId);
+    if (index !== -1) {
+      const confirmation = confirm(
+        "Are you sure you want to delete this card?"
+      );
+      if (confirmation) {
+        cards.splice(index, 1);
+        console.log("Card deleted");
+      }
+    }
   }
 </script>
 
@@ -224,6 +329,27 @@
       <button class="button-primary mt-4" on:click={logout}>Logout</button>
     </div> -->
 
+      <!--------------------------------------- action-links ---------------------------------------->
+      <div class="action-links-header">
+        <div class="action-links text-center">
+          <ul class="inline">
+            <li class="inline">
+              <a href="dashboard" on:click={viewCatalog}>View Catalog</a>
+            </li>
+            <li class="inline">
+              <a href="dashboard" on:click={showAddCardSection}
+                >Create Catalog</a
+              >
+            </li>
+            <li class="inline">
+              <a href="dashboard" on:click={showAddCardSection}>Add Card</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!--------------------------------------- Search Box ---------------------------------------->
+
       <div class="search-box mb-4">
         <input
           type="text"
@@ -233,22 +359,10 @@
         />
       </div>
 
-      <div class="action-links text-center">
-        <ul class="inline">
-          <li class="inline">
-            <a href="dashboard" on:click={viewCatalog}>View Catalog</a>
-          </li>
-          <li class="inline">
-            <a href="dashboard" on:click={showAddCardSection}>Create Catalog</a>
-          </li>
-          <li class="inline">
-            <a href="dashboard" on:click={showAddCardSection}>Add Card</a>
-          </li>
-        </ul>
-      </div>
+      <!--------------------------------------- table ---------------------------------------->
 
       <div
-        class="card-management card bg-white p-6 rounded-lg shadow-lg mb-6 border border-grey"
+        class="card-management card bg-white p-3 rounded-lg shadow-lg mb-1 border border-grey"
       >
         <div class="overflow-x-auto border border-grey">
           <table class="w-full fancy-table">
@@ -262,14 +376,15 @@
                 <th>CardwithGift Sku</th>
                 <th>Created Date</th>
                 <th>Modified Date</th>
-                <th>Activation Date</th>
-                <th>Deactivation Date</th>
+                <th>Activation</th>
+                <th>Deactivation</th>
                 <th>Front</th>
-                <th>Inside Left</th>
-                <th>Inside Right</th>
+                <th>Left</th>
+                <th>Right</th>
                 <th>Back</th>
                 <th>Uploaded By</th>
                 <th>Status</th>
+                <!-- <th>Actions</th> -->
               </tr>
             </thead>
             <tbody>
@@ -285,18 +400,32 @@
                   <td>{card.Modified_Date}</td>
                   <td>{card.Activation_Date}</td>
                   <td>{card.Deactivation_Date}</td>
-                  <td class="scroll-cell">{card.Front}</td>
-                  <td class="scroll-cell">{card.Inside_Left}</td>
-                  <td class="scroll-cell">{card.Inside_Right}</td>
-                  <td class="scroll-cell">{card.Back}</td>
+                  <td class="scroll-cell" title={card.Front}>{card.Front}</td>
+                  <td class="scroll-cell" title={card.Inside_Left}
+                    >{card.Inside_Left}</td
+                  >
+                  <td class="scroll-cell" title={card.Inside_Right}
+                    >{card.Inside_Right}</td
+                  >
+                  <td class="scroll-cell" title={card.Back}>{card.Back}</td>
                   <td>{card.Uploaded_By}</td>
                   <td>{card.Status}</td>
+                  <!-- <td>
+                    <button on:click={() => editCard(card)}>
+                      <i class="fas fa-edit" style="margin-right: 8px;" />
+                    </button>
+                    <button on:click={() => deleteCard(card.Publisher_ID)}>
+                      <i class="fas fa-trash-alt" style="margin-left: 8px;" />
+                    </button>
+                  </td> -->
                 </tr>
               {/each}
             </tbody>
           </table>
         </div>
       </div>
+
+      <!--------------------------------------- Add To Table ---------------------------------------->
     {/if}
     {#if showAddCard}
       <div class="add-card-section card bg-white p-4 rounded shadow-md mb-4">
@@ -315,9 +444,7 @@
                 {#if errors.Occasion && newCard.Occasion === ""}
                   <p style="color: red;">Occasion is required.</p>
                 {/if}
-
                 <label for="recipient">Recipient:</label>
-
                 <input
                   type="text"
                   bind:value={newCard.Recipient}
@@ -326,9 +453,7 @@
                 {#if errors.Recipient && newCard.Recipient === ""}
                   <p style="color: red;">Recipient is required.</p>
                 {/if}
-
                 <label for="publisherSku">Publisher SKU:</label>
-
                 <input
                   type="text"
                   bind:value={newCard.Publisher_Sku}
@@ -354,7 +479,6 @@
                 </div>
 
                 <label for="cardwithGiftSku">Card with Gift SKU:</label>
-
                 <input
                   type="text"
                   bind:value={newCard.CardwithGift_Sku}
@@ -365,7 +489,6 @@
                 {/if}
 
                 <label for="uploadedBy">Uploaded By:</label>
-
                 <input
                   type="text"
                   bind:value={newCard.Uploaded_By}
@@ -404,6 +527,8 @@
               </div>
             </div>
 
+            <!--------------------------------------- Images Container ---------------------------------------->
+
             <div class="images">
               <div class="input-col">
                 <label for="frontImage">Front Image:</label>
@@ -412,6 +537,9 @@
                   id="frontImage"
                   on:change={(e) => handleImageSelect(e, "Front")}
                 />
+                {#if imageErrors.Front}
+                  <p style="color: red;">{imageErrors.Front}</p>
+                {/if}
                 <div
                   class="image-container"
                   style={newCard.Front ? "" : "display: none;"}
@@ -427,6 +555,9 @@
                   id="insideLeftImage"
                   on:change={(e) => handleImageSelect(e, "Inside_Left")}
                 />
+                {#if imageErrors.Inside_Left}
+                  <p style="color: red;">{imageErrors.Inside_Left}</p>
+                {/if}
                 <div
                   class="image-container"
                   style={newCard.Inside_Left ? "" : "display: none;"}
@@ -442,6 +573,9 @@
                   id="insideRightImage"
                   on:change={(e) => handleImageSelect(e, "Inside_Right")}
                 />
+                {#if imageErrors.Inside_Right}
+                  <p style="color: red;">{imageErrors.Inside_Right}</p>
+                {/if}
                 <div
                   class="image-container"
                   style={newCard.Inside_Right ? "" : "display: none;"}
@@ -457,6 +591,9 @@
                   id="backImage"
                   on:change={(e) => handleImageSelect(e, "Back")}
                 />
+                {#if imageErrors.Back}
+                  <p style="color: red;">{imageErrors.Back}</p>
+                {/if}
                 <div
                   class="image-container"
                   style={newCard.Back ? "" : "display: none;"}
@@ -529,6 +666,7 @@
     margin-bottom: 30px;
     position: relative;
   }
+
   .input-col label {
     font-weight: bold;
     color: black;
@@ -542,6 +680,7 @@
     font-size: 15px;
     position: absolute;
   }
+
   .images {
     display: flex;
     flex-wrap: wrap;
@@ -565,10 +704,12 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
+
   .image-container img:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(142, 96, 227, 0.518);
   }
+
   .button-container {
     display: flex;
     justify-content: flex-end;
@@ -583,7 +724,7 @@
     cursor: pointer;
     margin: 5px;
     transition: background 0.3s, box-shadow 0.3s;
-    background: linear-gradient(45deg, #ff7e5f, #feb47b, #ffcb91, #ffdca0);
+    background: #bee8ff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     color: black;
     transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
@@ -597,26 +738,36 @@
     animation: colorTransition 1s ease infinite;
     transform: scale(1.1);
   }
+
   .button-primary:active,
   .button-secondary:active {
     transform: scale(0.8);
   }
+
   @keyframes colorTransition {
     0% {
       filter: hue-rotate(0deg);
     }
+
     100% {
       filter: hue-rotate(360deg);
     }
   }
+
   .search-box {
-    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .search-box input {
+    width: 50%;
+    padding: 8px;
+    font-size: 14px;
   }
 
   .action-links {
+    margin-top: 2px;
     text-align: center;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
   }
 
   .inline {
@@ -640,9 +791,18 @@
     border-radius: 4px;
     background-color: #f0f0f0;
     color: #333;
+    transition: background 0.3s, box-shadow 0.3s;
   }
 
   .action-links ul li a:hover {
     background: linear-gradient(45deg, #bee8ff, #ffccc5);
+  }
+
+  button:hover .fas.fa-edit {
+    color: rgb(255, 83, 83);
+  }
+
+  button:hover .fas.fa-trash-alt {
+    color: rgb(255, 83, 83);
   }
 </style>
