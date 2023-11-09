@@ -2,11 +2,32 @@
   <div class="footer skeleton-theme-gold-nouveau-bg">
     <div class="container mx-auto rounded-md text-center">
       <p class="text-lg skeleton-theme-gold-nouveau-text">
-        <span class="text-4xl block mb-3">🎁 Card with Gifts 🎉</span>
-        <span
-          >© {new Date().getFullYear()} Card with Gifts Pvt. Ltd. All Rights Reserved</span
-        >
+        <span>© {new Date().getFullYear()} CardwithGifts</span>
       </p>
     </div>
   </div>
 </footer>
+
+<style>
+  .skeleton-theme-gold-nouveau {
+    background: linear-gradient(to bottom, #f5ddda73, #d5eaf57e);
+    padding: 20px 0;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .footer p {
+    font-size: 20px;
+    color: #555; /* Text color */
+    margin: 0;
+  }
+
+  .footer p span {
+    font-weight: bold;
+    font-style: italic;
+  }
+</style>

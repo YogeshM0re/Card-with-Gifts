@@ -1,50 +1,32 @@
 <script>
   import { loggedIn, username } from "../lib/stores";
 </script>
-
-<link
-  href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap"
-  rel="stylesheet"
-/>
-<link
-  href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@100;200&family=Rajdhani&display=swap"
-  rel="stylesheet"
-/>
-
-<div
-  class="custom-navbar shadow-md"
-  style="background: linear-gradient(to bottom, #D5EAF5, #F5DDDA); padding: 20px; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;"
->
-  <div
-    class="container mx-auto"
-    style="display: flex; justify-content: space-between; align-items: center; margin-right: 200px;"
-  >
-    <div class="title-section">
-      <h1
-        class="text-4xl font-extrabold great-vibes text-black"
-        style="margin-bottom: 5px;"
-      >
-        Card with Gifts
-      </h1>
-      <p class="text-lg text-black museo-moderno" style="margin-top: -10px;">
-        Make an Impression!
+<div class="custom-navbar shadow-md" style="background: linear-gradient(to bottom, #D5EAF5, #F5DDDA); padding: 20px; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <div class="container mx-auto" style="display: flex; align-items: center;">
+    <div class="title-section" style="flex: 1;">
+      <h1 class="text-4xl font-extrabold great-vibes text-black" style="margin-bottom: 5px;">CardwithGifts</h1>
+      <p class="text text-black museo-moderno" style="margin-top: -10px;">Make an Impression!</p>
+    </div>
+    {#if $loggedIn}
+    <div class="publisher-dashboard" style="font-family: 'Poppins';">
+      Publisher Dashboard
+    </div>
+    <div class="user-section text-gray-300" style="flex: 1; text-align: right;">
+      <p style="margin: 0;">
+        <span style="font-weight: bold; color: black;">Welcome Publisher</span>
+        <span style="color: grey;">{$username}</span><br />
+        <span style="color: black;">Publisher ID: 01</span>
       </p>
     </div>
-
-    {#if $loggedIn}
-      <div class="user-section text-gray-300 flex items-center">
-        <p style="margin-right: -200px;">
-          <span style="font-weight: bold; color: black;">Welcome Publisher </span>
-          <span style=" color: grey;">{$username}</span>
-          <br />
-          <span style="color: black;">Publisher ID: 01</span>
-        </p>
-      </div>
+ 
     {/if}
   </div>
 </div>
 
 <style>
+  .custom-navbar {
+    padding: 5px 10px;
+  }
   .great-vibes {
     font-family: "Great Vibes", cursive;
   }
@@ -52,17 +34,32 @@
     font-family: "MuseoModerno", sans-serif;
     font-weight: 200;
   }
-  .custom-navbar {
-    padding: 5px 10px;
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .user-section {
+    text-align: right;
+  }
+  .publisher-dashboard {
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    /* Additional styling if needed */
+    border-radius: 8px;
+    padding: 20px;
+    color: #333;
+    font-size: 40px;
   }
   @media (max-width: 768px) {
     .container {
       flex-direction: column;
       text-align: center;
-      margin-right: 0;
     }
     .user-section {
-      margin-right: 0;
+      text-align: center;
+      margin-top: 10px;
     }
   }
 </style>

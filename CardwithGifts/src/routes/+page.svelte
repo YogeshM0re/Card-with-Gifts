@@ -22,12 +22,12 @@
   }
 </script>
 
-<div class="container mx-auto p-2">
+<div class="container mx-auto p-2 flex justify-center items-center h-screen">
   <div
     class="login-container"
-    style="background: linear-gradient(#F5DDDA ,#D5EAF5); padding: 2rem; box-shadow: 0 4px 14px 0 rgba(0,0,0,0.1); border: 0.1px solid grey; border-radius: 0.375rem;"
+    style="background: linear-gradient(#F5DDDA, #D5EAF5); padding: 2rem; box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1); border: 0.1px solid grey; border-radius: 0.375rem;"
   >
-    <h1 class="text-4xl font-extrabold mb-6 text-center text-white">
+    <h1 class="text-2xl  mb-4 text-center text-white">
       Welcome Back!
     </h1>
 
@@ -36,20 +36,20 @@
       on:submit|preventDefault={handleLogin}
     >
       <label class="flex flex-col">
-        <span class="text-white mb-2 text-lg">Username</span>
+        <span class="text-gray-700 mb-2 text-lg">Username</span>
         <input
           bind:value={inputUsername}
-          class="input w-64 rounded-lg py-3 px-4 bg-purple-100 bg-opacity-50"
+          class="input w-64 rounded-lg py-3 px-4 bg-white"
           type="text"
           placeholder="Enter your username"
         />
       </label>
 
       <label class="flex flex-col">
-        <span class="text-white mb-2 text-lg">Password</span>
+        <span class="text-gray-700 mb-2 text-lg">Password</span>
         <input
           bind:value={inputPassword}
-          class="input w-64 rounded-lg py-3 px-4 bg-purple-100 bg-opacity-50"
+          class="input w-64 rounded-lg py-3 px-4 bg-white"
           type="password"
           placeholder="Enter your password"
         />
