@@ -511,15 +511,31 @@
     font-size: 16px;
     cursor: pointer;
     margin: 5px;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    background-image: linear-gradient(to bottom, #d5eaf5, #f5ddda);
+    transition: background 0.3s, box-shadow 0.3s;
+    background: linear-gradient(45deg, #ff7e5f, #feb47b, #ffcb91, #ffdca0);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: black;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
   }
 
   .button-primary:hover,
   .button-secondary:hover {
-    background-image: linear-gradient(to bottom, #d5eaf5, #f5ddda);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.311);
-  }
+    background: linear-gradient(45deg, #ff758c, #ff7eb3, #845ec2, #3425af);
 
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+    animation: colorTransition 1s ease infinite;
+    transform: scale(1.1);
+  }
+  .button-primary:active,
+  .button-secondary:active {
+    transform: scale(0.8);
+  }
+  @keyframes colorTransition {
+    0% {
+      filter: hue-rotate(0deg);
+    }
+    100% {
+      filter: hue-rotate(360deg);
+    }
+  }
 </style>
