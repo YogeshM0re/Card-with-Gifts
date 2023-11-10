@@ -3,85 +3,6 @@
   import * as yup from "yup";
   import "@fortawesome/fontawesome-free/css/all.min.css";
 
-  // --------------------------------------- Static Card Data ----------------------------------------
-
-  let cards = [
-    {
-      Publisher_ID: "123",
-      Occasion: "Birthday",
-      Recipient: "Friend",
-      Orientation: "Landscape",
-      Publisher_Sku: "SKU123",
-      CardwithGift_Sku: "CardSKU123",
-      Created_Date: "2023-10-12",
-      Modified_Date: "2022-10-15",
-      Activation_Date: "2023-10-20",
-      Deactivation_Date: "2023-12-01",
-      Front: "Front Image URL",
-      Inside_Left: "Inside Left Image URL",
-      Inside_Right: "Inside Right Image URL",
-      Back: "Back Image URL",
-      Uploaded_By: "John",
-      Status: "Active",
-    },
-    {
-      Publisher_ID: "456",
-      Occasion: "Anniversary",
-      Recipient: "Spouse",
-      Orientation: "Portrait",
-      Publisher_Sku: "SKU456",
-      CardwithGift_Sku: "CardSKU456",
-      Created_Date: "2023-09-20",
-      Modified_Date: "2023-09-25",
-      Activation_Date: "2023-09-30",
-      Deactivation_Date: "2023-11-15",
-      Front: "Front Image URL 2",
-      Inside_Left: "Inside Left Image URL 2",
-      Inside_Right: "Inside Right Image URL 2",
-      Back: "Back Image URL 2",
-      Uploaded_By: "Jane",
-      Status: "Inactive",
-    },
-    {
-      Publisher_ID: "457",
-      Occasion: "Anniversary",
-      Recipient: "Friend",
-      Orientation: "Landscape",
-      Publisher_Sku: "SKU987",
-      CardwithGift_Sku: "CardSKU983",
-      Created_Date: "2023-10-12",
-      Modified_Date: "2023-10-15",
-      Activation_Date: "2023-10-20",
-      Deactivation_Date: "2023-12-01",
-      Front: "Front Image URL",
-      Inside_Left: "Inside Left Image URL",
-      Inside_Right: "Inside Right Image URL",
-      Back: "Back Image URL",
-      Uploaded_By: "John",
-      Status: "Active",
-    },
-    {
-      Publisher_ID: "500",
-      Occasion: "Birthday",
-      Recipient: "Spouse",
-      Orientation: "Landscape",
-      Publisher_Sku: "SKU453",
-      CardwithGift_Sku: "CardSKU453",
-      Created_Date: "2021-08-22",
-      Modified_Date: "2022-02-15",
-      Activation_Date: "2023-01-05",
-      Deactivation_Date: "2023-06-28",
-      Front: "Front Image URL",
-      Inside_Left: "Inside Left Image URL",
-      Inside_Right: "Inside Right Image URL",
-      Back: "Back Image URL",
-      Uploaded_By: "John",
-      Status: "Active",
-    },
-  ];
-
-  // --------------------------------------- notifications ----------------------------------------
-
   let notifications = [
     {
       message: "New card added",
@@ -92,6 +13,7 @@
   ];
 
   // --------------------------------------- New Card ----------------------------------------
+  let cards = [];
 
   let currentDate = new Date().toISOString().split("T")[0];
   let currentTime = new Date().toTimeString().split(" ")[0];
@@ -235,25 +157,7 @@
   }
   let originalCards = [...cards];
 
-  // --------------------------------------- Search Bar ----------------------------------------
 
-  function handleSearch(event) {
-    const searchTerm = event.target.value.trim().toLowerCase();
-
-    if (searchTerm === "") {
-      cards = [...originalCards];
-    } else {
-      const filteredCards = originalCards.filter((card) => {
-        return Object.values(card).some(
-          (value) =>
-            value &&
-            typeof value === "string" &&
-            value.toLowerCase().includes(searchTerm)
-        );
-      });
-      cards = filteredCards;
-    }
-  }
   // --------------------------------------- show Add Card & show Catalog ----------------------------------------
 
   let showCatalog = true;
@@ -269,70 +173,19 @@
     showAddCard = true;
   }
 
-  // --------------------------------------- Edit Card ----------------------------------------
 
-  function editCard(card) {
-    newCard = { ...card };
-    showAddCardSection();
-    const addCardButton = document.querySelector(".btn-add-card");
-    addCardButton.textContent = "Update Card";
-    addCardButton.removeEventListener("click", addNewCard);
-    addCardButton.addEventListener("click", updateCard);
-  }
-
-  function updateCard() {
-    try {
-      const index = cards.findIndex(
-        (card) => card.Publisher_ID === newCard.Publisher_ID
-      );
-      if (index !== -1) {
-        cards[index] = { ...newCard };
-        cards[index].Modified_Date = new Date().toISOString().split("T")[0];
-        console.log("Card updated:", cards[index]);
-        resetNewCard();
-        const addCardButton = document.querySelector(".btn-add-card");
-        addCardButton.textContent = "Add Card";
-        addCardButton.removeEventListener("click", updateCard);
-        addCardButton.addEventListener("click", addNewCard);
-      } else {
-        throw new Error("Card not found for updating.");
-      }
-    } catch (error) {
-      console.error("Error updating card:", error);
-    }
-  }
-
-  // --------------------------------------- Delete Card ----------------------------------------
-
-  function deleteCard(publisherId) {
-    const index = cards.findIndex((card) => card.Publisher_ID === publisherId);
-    if (index !== -1) {
-      const confirmation = confirm(
-        "Are you sure you want to delete this card?"
-      );
-      if (confirmation) {
-        cards.splice(index, 1);
-        console.log("Card deleted");
-      }
-    }
-  }
-  let expandedCard = null;
-
-  function toggleDetails(card) {
-    expandedCard = expandedCard === card ? null : card;
-  }
 </script>
 
 <div class="container">
   <div class="dashboard">
     {#if showCatalog}
       <!-- <div
-      class="user-info card bg-gradient-to-r from-purple-500 to-indigo-600 p-6 rounded-lg shadow-lg mb-6"
-    >
-      <h2 class="text-3xl font-bold text-white">Welcome, {user.username}!</h2>
-      <p class="text-gray-300">Email: {user.email}</p>
-      <button class="button-primary mt-4" on:click={logout}>Logout</button>
-    </div> -->
+        class="user-info card bg-gradient-to-r from-purple-500 to-indigo-600 p-6 rounded-lg shadow-lg mb-6"
+      >
+        <h2 class="text-3xl font-bold text-white">Welcome, {user.username}!</h2>
+        <p class="text-gray-300">Email: {user.email}</p>
+        <button class="button-primary mt-4" on:click={logout}>Logout</button>
+      </div> -->
 
       <!--------------------------------------- action-links ---------------------------------------->
       <div class="action-links-header">
@@ -351,90 +204,8 @@
             </li>
           </ul>
         </div>
-        <div class="search-box mb-4">
-          <input
-            type="text"
-            placeholder="Search cards..."
-            on:input={handleSearch}
-            class="w-full border border-gray-300 rounded-md p-2"
-          />
-        </div>
       </div>
 
-      <!--------------------------------------- Search Box ---------------------------------------->
-
-      <!--------------------------------------- table ---------------------------------------->
-
-      <div
-        class="card-management card bg-white p-3 rounded-lg shadow-lg mb-1 border border-grey"
-      >
-        <div class="overflow-x-auto border border-grey">
-          <table class="w-full fancy-table">
-            <thead>
-              <tr class="border border-black scroll-cell">
-                <th>Publisher ID</th>
-                <th>Occasion</th>
-                <th>Recipient</th>
-                <th>Orientation</th>
-                <th>Publisher Sku</th>
-                <th>CardwithGift Sku</th>
-                <th>Uploaded By</th>
-                <th>Status</th>
-                <th class="actions-header">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {#each cards as card (card.Publisher_ID)}
-                <tr
-                  class="border border-black scroll-cell table-row {expandedCard ===
-                  card
-                    ? 'expanded-details'
-                    : ''}"
-                  on:click={() => toggleDetails(card)}
-                >
-                  <td>{card.Publisher_ID}</td>
-                  <td>{card.Occasion}</td>
-                  <td>{card.Recipient}</td>
-                  <td>{card.Orientation}</td>
-                  <td>{card.Publisher_Sku}</td>
-                  <td>{card.CardwithGift_Sku}</td>
-                  <td>{card.Uploaded_By}</td>
-                  <td>{card.Status}</td>
-                  <td class="actions-cell">
-                    <button on:click={() => editCard(card)}>
-                      <i class="fas fa-edit" />
-                    </button>
-                    <button on:click={() => deleteCard(card.Publisher_ID)}>
-                      <i class="fas fa-trash-alt" />
-                    </button>
-                  </td>
-                </tr>
-                {#if expandedCard === card}
-                  <tr class="border border-black">
-                    <td colspan="8">
-                      <div>
-                        <p>Created On: {card.Created_Date}</p>
-                        <p>Modified On: {card.Modified_Date}</p>
-                        <p>Activation: {card.Activation_Date}</p>
-                        <p>Deactivation: {card.Deactivation_Date}</p>
-                        <p>Front: {card.Front}</p>
-                        <p>Left : {card.Inside_Left}</p>
-                        <p>Right: {card.Inside_Right}</p>
-                        <p>Back: {card.Back}</p>
-
-                      </div>
-                    </td>
-                  </tr>
-                {/if}
-              {/each}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!--------------------------------------- Add To Table ---------------------------------------->
-    {/if}
-    {#if showAddCard}
       <div class="add-card-section card bg-white p-4 rounded shadow-md mb-4">
         <div class="input-fields">
           <div>
@@ -648,49 +419,6 @@
     @apply w-full border border-gray-300 rounded-md p-2;
   }
 
-  .fancy-table th,
-  .fancy-table td {
-    @apply p-3;
-    border: 1px solid #ddd;
-  }
-
-  .fancy-table tr:hover {
-    background-color: #ddd;
-  }
-  .fancy-table {
-    font-size: 75%;
-    table-layout: fixed;
-    width: 100%;
-  }
-
-  .fancy-table th,
-  .fancy-table td {
-    padding: 8px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 0;
-  }
-
-  .scroll-cell {
-    max-width: 200px; /* Adjust the width based on your content */
-  }
-
-  @media (max-width: 768px) {
-    .fancy-table th,
-    .fancy-table td {
-      padding: 4px;
-      font-size: 12px;
-    }
-  }
-  .scroll-cell {
-    max-width: 150px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    cursor: pointer;
-  }
-
   .input-col {
     flex: 1;
     margin: 0 5px;
@@ -785,92 +513,52 @@
     }
   }
 
-  .search-box {
-    text-align: center;
-  }
-
-  .search-box input {
-    width: 50%;
-    padding: 8px;
-    font-size: 14px;
-  }
-
   .action-links {
-    margin-top: 20px;
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 20px;
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-    border: 2px solid #3498db;
-    border-radius: 10px;
-    background-color: #ecf0f1;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;
-  }
+  margin-top: 20px;
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid #3498db;
+  border-radius: 10px;
+  background-color: #ecf0f1;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
 
-  .action-links:hover {
-    color: #fff;
-  }
+.action-links:hover {
 
-  .inline {
-    display: inline;
-  }
+  color: #fff;
+}
 
-  .action-links ul {
-    list-style: none;
-    padding: 0;
-  }
+.inline {
+  display: inline;
+}
 
-  .action-links ul li {
-    display: inline;
-    margin: 0 10px;
-  }
+.action-links ul {
+  list-style: none;
+  padding: 0;
+}
 
-  .action-links ul li a {
-    text-decoration: none;
-    padding: 8px 16px;
-    color: #34495e;
-    border: 1px solid #34495e;
-    border-radius: 5px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
+.action-links ul li {
+  display: inline;
+  margin: 0 10px;
+}
 
-  .action-links ul li a:hover {
-    background-color: #ffccc5;
-    color: #34495e;
-  }
-  button:hover .fas.fa-edit {
-    color: rgb(255, 83, 83);
-  }
+.action-links ul li a {
+  text-decoration: none;
+  padding: 8px 16px;
+  color: #34495e;
+  border: 1px solid #34495e;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
 
-  button:hover .fas.fa-trash-alt {
-    color: rgb(255, 83, 83);
-  }
-  .actions-header,
-  .actions-cell {
-    width: 8%; /* Adjust the width as needed */
-    text-align: center;
-  }
+.action-links ul li a:hover {
+  background-color: #ffccc5;
+  color: #34495e;
+}
 
-  .actions-cell button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 0 4px; /* Add space between the icons */
-    transition: color 0.3s ease;
-  }
-
-  .actions-cell button:hover {
-    color: rgb(255, 83, 83);
-  }
-
-  .actions-cell i {
-    margin: 0; /* Remove margin for better alignment */
-  }
-  .expanded-details {
-    background-color: #f5f5f5; /* Adjust the background color as needed */
-  }
 </style>
